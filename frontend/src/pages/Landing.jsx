@@ -49,7 +49,6 @@ const Landing = () => {
               data-testid="start-now-btn"
               onClick={() => navigate('/auth?mode=signup')}
               className="w-64 h-14 bg-white hover:bg-gray-100 text-[#0a1929] font-semibold text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105"
-              style={{fontFamily: 'Space Grotesk, sans-serif'}}
             >
               Start Now
             </Button>
