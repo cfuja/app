@@ -57,7 +57,6 @@ const Landing = () => {
               data-testid="login-btn"
               onClick={() => navigate('/auth?mode=login')}
               className="w-64 h-14 bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600 text-white font-semibold text-lg rounded-full shadow-lg transition-all duration-300 hover:scale-105"
-              style={{fontFamily: 'Space Grotesk, sans-serif'}}
             >
               Log In
             </Button>
