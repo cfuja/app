@@ -60,7 +60,7 @@ const Layout = ({ children, user, onLogout, currentPage }) => {
 
       <div className="flex max-w-7xl mx-auto">
         {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 min-h-[calc(100vh-4rem)] p-4">
+        <aside className="w-64 bg-white dark:bg-[#0f2942] border-r border-gray-200 dark:border-gray-700 min-h-[calc(100vh-4rem)] p-4">
           <nav className="space-y-2">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -73,9 +73,8 @@ const Layout = ({ children, user, onLogout, currentPage }) => {
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isActive
                       ? 'bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                   }`}
-                  style={{fontFamily: 'Inter, sans-serif'}}
                 >
                   <Icon className="w-5 h-5" />
                   <span className="font-medium">{item.label}</span>
