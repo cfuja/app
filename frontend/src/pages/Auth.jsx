@@ -85,14 +85,10 @@ const Auth = ({ setUser }) => {
       <Card className="w-full max-w-md relative z-10 bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center">
-              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
+            <img src="/younivity-logo.png" alt="YOUNIVITY Logo" className="w-16 h-16" />
           </div>
-          <CardTitle className="text-2xl font-bold text-center" style={{fontFamily: 'Space Grotesk, sans-serif'}}>Welcome to YOUNIVITY</CardTitle>
-          <CardDescription className="text-center" style={{fontFamily: 'Inter, sans-serif'}}>Choose your authentication method</CardDescription>
+          <CardTitle className="text-2xl font-bold text-center">Welcome to YOUNIVITY</CardTitle>
+          <CardDescription className="text-center">Choose your authentication method</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={mode} onValueChange={setMode} className="w-full">
