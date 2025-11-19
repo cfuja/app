@@ -447,6 +447,56 @@ async def join_group(group_id: str, current_user: User = Depends(get_current_use
     
     return {"message": "Joined group successfully"}
 
+@api_router.post("/groups/{group_id}/invite")
+async def invite_to_group(
+    group_id: str,
+    email: str,
+    current_user: User = Depends(get_current_user)
+):
+    # Verify user is in group
+    group = await db.groups.find_one({"id": group_id, "member_ids": current_user.id})
+    if not group:
+        raise HTTPException(status_code=403, detail="Not a member of this group")
+    
+    # Find user by email
+    invited_user = await db.users.find_one({"email": email})
+    if not invited_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if invited_user['id'] in group['member_ids']:
+        raise HTTPException(status_code=400, detail="User already in group")
+    
+    # Add user to group
+    await db.groups.update_one(
+        {"id": group_id},
+        {"$push": {"member_ids": invited_user['id']}}
+    )
+    
+    await db.users.update_one(
+        {"id": invited_user['id']},
+        {"$push": {"group_ids": group_id}}
+    )
+    
+    return {"message": f"Successfully invited {email} to group"}
+
+@api_router.get("/groups/{group_id}/members")
+async def get_group_members(
+    group_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    # Verify user is in group
+    group = await db.groups.find_one({"id": group_id, "member_ids": current_user.id})
+    if not group:
+        raise HTTPException(status_code=403, detail="Not a member of this group")
+    
+    # Get all members
+    members = await db.users.find(
+        {"id": {"$in": group['member_ids']}},
+        {"_id": 0, "id": 1, "full_name": 1, "email": 1}
+    ).to_list(1000)
+    
+    return members
+
 # Message routes
 @api_router.get("/groups/{group_id}/messages", response_model=List[Message])
 async def get_group_messages(
