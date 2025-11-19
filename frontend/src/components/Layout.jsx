@@ -18,22 +18,31 @@ const Layout = ({ children, user, onLogout, currentPage }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0a1929]">
       {/* Top Navigation */}
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <nav className="bg-white dark:bg-[#0f2942] border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-blue-500 flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <h1 className="text-xl font-bold text-gray-900" style={{fontFamily: 'Space Grotesk, sans-serif'}}>YOUNIVITY</h1>
+              <img src="/younivity-logo.png" alt="YOUNIVITY Logo" className="w-10 h-10" />
+              <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">YOUNIVITY</h1>
             </div>
             
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600" style={{fontFamily: 'Inter, sans-serif'}}>{user.email}</span>
+              <Button
+                data-testid="theme-toggle-btn"
+                variant="outline"
+                size="icon"
+                onClick={toggleTheme}
+                className="relative"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-4 h-4" />
+                ) : (
+                  <Moon className="w-4 h-4" />
+                )}
+              </Button>
+              <span className="text-sm text-gray-600 dark:text-gray-400">{user.email}</span>
               <Button
                 data-testid="logout-btn"
                 variant="outline"
