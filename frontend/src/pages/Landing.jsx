@@ -64,7 +64,7 @@ const Landing = () => {
 
           {/* Ad Placement Zone */}
           <div className="mt-16 p-6 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10">
-            <p className="text-teal-200/60 text-sm" style={{fontFamily: 'Inter, sans-serif'}}>Ad Space - Integration Ready</p>
+            <p className="text-teal-200/60 text-sm">Ad Space - Integration Ready</p>
           </div>
         </div>
       </div>
