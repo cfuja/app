@@ -1,14 +1,17 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import { Button } from '@/components/ui/button';
-import { Calendar, Users, Settings, LayoutDashboard, LogOut } from 'lucide-react';
+import { Calendar, Users, Settings, LayoutDashboard, LogOut, ListTodo, Moon, Sun } from 'lucide-react';
 
 const Layout = ({ children, user, onLogout, currentPage }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+    { id: 'tasks', label: 'Tasks', icon: ListTodo, path: '/tasks' },
     { id: 'calendar', label: 'Calendar', icon: Calendar, path: '/calendar' },
     { id: 'groups', label: 'Groups', icon: Users, path: '/groups' },
     { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
