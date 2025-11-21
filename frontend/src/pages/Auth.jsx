@@ -197,6 +197,7 @@ const Auth = ({ setUser }) => {
                     value={signupData.password}
                     onChange={(e) => setSignupData({...signupData, password: e.target.value})}
                     required
+                    className="text-gray-900"
                   />
                 </div>
                 <Button 
