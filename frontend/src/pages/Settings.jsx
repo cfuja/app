@@ -60,14 +60,50 @@ const Settings = ({ user, onLogout }) => {
     <Layout user={user} onLogout={onLogout} currentPage="settings">
       <div data-testid="settings-page" className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900" style={{fontFamily: 'Space Grotesk, sans-serif'}}>Settings</h1>
-          <p className="text-gray-600 mt-1" style={{fontFamily: 'Inter, sans-serif'}}>Configure your LMS integrations</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Settings</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Configure your preferences and integrations</p>
         </div>
 
-        <Card>
+        {/* Theme Settings */}
+        <Card className="dark:bg-gray-900 dark:border-gray-700">
           <CardHeader>
-            <CardTitle>Profile Information</CardTitle>
-            <CardDescription>Your account details</CardDescription>
+            <CardTitle className="dark:text-gray-100">Appearance</CardTitle>
+            <CardDescription className="dark:text-gray-400">Customize how YOUNIVITY looks</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label className="dark:text-gray-200">Theme</Label>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Current theme: {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                </p>
+              </div>
+              <Button
+                data-testid="settings-theme-toggle-btn"
+                variant="outline"
+                onClick={toggleTheme}
+                className="flex items-center gap-2"
+              >
+                {theme === 'dark' ? (
+                  <>
+                    <Sun className="w-4 h-4" />
+                    Switch to Light
+                  </>
+                ) : (
+                  <>
+                    <Moon className="w-4 h-4" />
+                    Switch to Dark
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="dark:bg-gray-900 dark:border-gray-700">
+          <CardHeader>
+            <CardTitle className="dark:text-gray-100">Profile Information</CardTitle>
+            <CardDescription className="dark:text-gray-400">Your account details</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
