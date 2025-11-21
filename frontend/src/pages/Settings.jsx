@@ -13,6 +13,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const Settings = ({ user, onLogout }) => {
+  const { theme, toggleTheme } = useTheme();
   const [lmsConfig, setLmsConfig] = useState({
     learning_suite_api_key: '',
     canvas_api_key: '',
