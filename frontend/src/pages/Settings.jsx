@@ -121,10 +121,10 @@ const Settings = ({ user, onLogout }) => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="dark:bg-gray-900 dark:border-gray-700">
           <CardHeader>
-            <CardTitle>LMS Integration</CardTitle>
-            <CardDescription>
+            <CardTitle className="dark:text-gray-100">LMS Integration</CardTitle>
+            <CardDescription className="dark:text-gray-400">
               Connect Learning Suite and Canvas to automatically sync your assignments
             </CardDescription>
           </CardHeader>
