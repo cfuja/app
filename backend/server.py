@@ -374,19 +374,146 @@ async def update_lms_config(
 
 @api_router.post("/lms/sync")
 async def sync_lms_assignments(current_user: User = Depends(get_current_user)):
-    """Placeholder for syncing assignments from Learning Suite and Canvas"""
+    """Sync assignments from Canvas using stored access token"""
     config = await db.lms_configs.find_one({"user_id": current_user.id})
     
     if not config:
         raise HTTPException(status_code=400, detail="Please configure your LMS API keys first")
     
-    # TODO: Implement actual API calls to Learning Suite and Canvas
-    # For now, return a placeholder response
+    synced_count = 0
+    
+    # Canvas sync with OAuth token
+    if config.get('canvas_access_token'):
+        try:
+            import requests
+            canvas_domain = config.get('canvas_domain', os.environ.get('CANVAS_BASE_URL', 'https://canvas.instructure.com'))
+            headers = {'Authorization': f"Bearer {config['canvas_access_token']}"}
+            
+            # Get courses
+            courses_resp = requests.get(f"{canvas_domain}/api/v1/courses", headers=headers)
+            if courses_resp.status_code == 200:
+                courses = courses_resp.json()
+                
+                # Get assignments for each course
+                for course in courses:
+                    assignments_resp = requests.get(
+                        f"{canvas_domain}/api/v1/courses/{course['id']}/assignments",
+                        headers=headers
+                    )
+                    if assignments_resp.status_code == 200:
+                        assignments_data = assignments_resp.json()
+                        
+                        for item in assignments_data:
+                            if item.get('due_at'):
+                                # Check if assignment already exists
+                                existing = await db.assignments.find_one({
+                                    "user_id": current_user.id,
+                                    "title": item['name'],
+                                    "source": "canvas"
+                                })
+                                
+                                if not existing:
+                                    assignment = Assignment(
+                                        user_id=current_user.id,
+                                        title=item['name'],
+                                        description=item.get('description', ''),
+                                        due_date=datetime.fromisoformat(item['due_at'].replace('Z', '+00:00')),
+                                        course_name=course.get('name', 'Unknown Course'),
+                                        source='canvas'
+                                    )
+                                    
+                                    doc = assignment.model_dump()
+                                    doc['due_date'] = doc['due_date'].isoformat()
+                                    doc['created_at'] = doc['created_at'].isoformat()
+                                    
+                                    await db.assignments.insert_one(doc)
+                                    synced_count += 1
+        except Exception as e:
+            logger.error(f"Canvas sync error: {str(e)}")
+    
     return {
-        "message": "LMS sync ready. Integrate Learning Suite and Canvas API calls here.",
-        "learning_suite_configured": bool(config.get('learning_suite_api_key')),
-        "canvas_configured": bool(config.get('canvas_api_key'))
+        "message": f"Successfully synced {synced_count} assignments from Canvas",
+        "synced_count": synced_count,
+        "canvas_configured": bool(config.get('canvas_access_token'))
     }
+
+@api_router.get("/canvas/auth/url")
+async def get_canvas_auth_url(current_user: User = Depends(get_current_user)):
+    """Generate Canvas OAuth authorization URL"""
+    client_id = os.environ.get('CANVAS_CLIENT_ID')
+    redirect_uri = os.environ.get('CANVAS_REDIRECT_URI')
+    canvas_base = os.environ.get('CANVAS_BASE_URL', 'https://canvas.instructure.com')
+    
+    if not client_id:
+        raise HTTPException(status_code=500, detail="Canvas OAuth not configured")
+    
+    # Store user ID in session/state for callback
+    state = f"{current_user.id}"
+    
+    auth_url = (
+        f"{canvas_base}/login/oauth2/auth?"
+        f"client_id={client_id}&"
+        f"response_type=code&"
+        f"redirect_uri={redirect_uri}&"
+        f"state={state}&"
+        f"scope=url:GET|/api/v1/courses url:GET|/api/v1/courses/:course_id/assignments"
+    )
+    
+    return {"auth_url": auth_url}
+
+@api_router.get("/canvas/oauth/callback")
+async def canvas_oauth_callback(code: str, state: str):
+    """Handle Canvas OAuth callback and exchange code for token"""
+    try:
+        import requests
+        
+        client_id = os.environ.get('CANVAS_CLIENT_ID')
+        client_secret = os.environ.get('CANVAS_CLIENT_SECRET')
+        redirect_uri = os.environ.get('CANVAS_REDIRECT_URI')
+        canvas_base = os.environ.get('CANVAS_BASE_URL', 'https://canvas.instructure.com')
+        
+        # Exchange code for access token
+        token_resp = requests.post(
+            f"{canvas_base}/login/oauth2/token",
+            data={
+                'grant_type': 'authorization_code',
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'redirect_uri': redirect_uri,
+                'code': code
+            }
+        )
+        
+        if token_resp.status_code != 200:
+            raise HTTPException(status_code=400, detail="Failed to exchange code for token")
+        
+        token_data = token_resp.json()
+        access_token = token_data['access_token']
+        
+        # Get user from state
+        user_id = state
+        
+        # Store access token in user's LMS config
+        await db.lms_configs.update_one(
+            {"user_id": user_id},
+            {
+                "$set": {
+                    "canvas_access_token": access_token,
+                    "canvas_domain": canvas_base
+                }
+            },
+            upsert=True
+        )
+        
+        # Redirect to settings page with success message
+        return {
+            "message": "Canvas connected successfully!",
+            "redirect": "/settings"
+        }
+        
+    except Exception as e:
+        logger.error(f"Canvas OAuth callback error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Group routes
 @api_router.get("/groups", response_model=List[Group])
