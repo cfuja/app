@@ -89,10 +89,13 @@ const Calendar = ({ user, onLogout }) => {
                 events={events}
                 startAccessor="start"
                 endAccessor="end"
+                view={currentView}
+                onView={(view) => setCurrentView(view)}
+                date={currentDate}
+                onNavigate={(date) => setCurrentDate(date)}
                 onSelectEvent={handleSelectEvent}
                 eventPropGetter={eventStyleGetter}
                 views={['month', 'week', 'day', 'agenda']}
-                defaultView="month"
                 style={{ height: '100%' }}
               />
             </div>
