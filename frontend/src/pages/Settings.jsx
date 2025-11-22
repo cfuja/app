@@ -17,7 +17,8 @@ const Settings = ({ user, onLogout }) => {
   const [lmsConfig, setLmsConfig] = useState({
     learning_suite_api_key: '',
     canvas_api_key: '',
-    canvas_domain: ''
+    canvas_domain: '',
+    canvas_access_token: ''
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
