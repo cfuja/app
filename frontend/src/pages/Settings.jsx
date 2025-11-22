@@ -140,9 +140,9 @@ const Settings = ({ user, onLogout }) => {
             ) : (
               <form onSubmit={handleSave} className="space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Learning Suite</h3>
+                  <h3 className="text-lg font-semibold dark:text-gray-100">Learning Suite</h3>
                   <div className="space-y-2">
-                    <Label htmlFor="ls-key">API Key</Label>
+                    <Label htmlFor="ls-key" className="dark:text-gray-200">API Key</Label>
                     <Input
                       id="ls-key"
                       data-testid="learning-suite-key-input"
@@ -150,38 +150,35 @@ const Settings = ({ user, onLogout }) => {
                       placeholder="Enter your Learning Suite API key"
                       value={lmsConfig.learning_suite_api_key}
                       onChange={(e) => setLmsConfig({...lmsConfig, learning_suite_api_key: e.target.value})}
+                      className="dark:bg-gray-800 dark:text-gray-100"
                     />
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Get your API key from Learning Suite settings. Once configured, assignments will sync automatically.
                     </p>
                   </div>
                 </div>
 
-                <div className="border-t pt-6 space-y-4">
-                  <h3 className="text-lg font-semibold">Canvas</h3>
-                  <div className="space-y-2">
-                    <Label htmlFor="canvas-domain">Canvas Domain</Label>
-                    <Input
-                      id="canvas-domain"
-                      data-testid="canvas-domain-input"
-                      placeholder="canvas.instructure.com or your institution's domain"
-                      value={lmsConfig.canvas_domain}
-                      onChange={(e) => setLmsConfig({...lmsConfig, canvas_domain: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="canvas-key">API Key</Label>
-                    <Input
-                      id="canvas-key"
-                      data-testid="canvas-key-input"
-                      type="password"
-                      placeholder="Enter your Canvas API token"
-                      value={lmsConfig.canvas_api_key}
-                      onChange={(e) => setLmsConfig({...lmsConfig, canvas_api_key: e.target.value})}
-                    />
-                    <p className="text-sm text-gray-500">
-                      Get your API token from Canvas Account → Settings → New Access Token
+                <div className="border-t dark:border-gray-700 pt-6 space-y-4">
+                  <h3 className="text-lg font-semibold dark:text-gray-100">Canvas</h3>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                    <h4 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">Canvas OAuth Integration</h4>
+                    <p className="text-sm text-blue-800 dark:text-blue-400 mb-3">
+                      Connect your Canvas account securely using OAuth. This will automatically fetch all your courses and assignments.
                     </p>
+                    <Button
+                      type="button"
+                      data-testid="canvas-oauth-btn"
+                      onClick={handleCanvasOAuth}
+                      className="bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-600 hover:to-blue-600"
+                    >
+                      {lmsConfig.canvas_access_token ? 'Reconnect Canvas' : 'Connect with Canvas'}
+                    </Button>
+                    {lmsConfig.canvas_access_token && (
+                      <p className="text-sm text-green-700 dark:text-green-400 mt-2 flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                        Canvas connected
+                      </p>
+                    )}
                   </div>
                 </div>
 
