@@ -10,6 +10,7 @@ import Calendar from './pages/Calendar';
 import Groups from './pages/Groups';
 import GroupChat from './pages/GroupChat';
 import Settings from './pages/Settings';
+import CanvasCallback from './pages/CanvasCallback';
 
 function App() {
   const [user, setUser] = useState(null);
