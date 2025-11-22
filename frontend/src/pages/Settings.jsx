@@ -57,9 +57,18 @@ const Settings = ({ user, onLogout }) => {
     }
   };
 
-  const handleCanvasOAuth = () => {
-    // Placeholder for Canvas OAuth integration
-    toast.info('Canvas OAuth integration coming soon!');
+  const handleCanvasOAuth = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/canvas/auth/url`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Redirect to Canvas OAuth
+      window.location.href = response.data.auth_url;
+    } catch (error) {
+      toast.error('Failed to initiate Canvas OAuth. Please check configuration.');
+    }
   };
 
   return (
