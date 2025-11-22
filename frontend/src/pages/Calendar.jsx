@@ -14,6 +14,8 @@ const API = `${BACKEND_URL}/api`;
 const Calendar = ({ user, onLogout }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentView, setCurrentView] = useState('month');
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
     fetchAssignments();
