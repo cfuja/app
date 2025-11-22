@@ -110,6 +110,7 @@ const Auth = ({ setUser }) => {
                     value={loginData.email}
                     onChange={(e) => setLoginData({...loginData, email: e.target.value})}
                     required
+                    className="text-gray-900"
                   />
                 </div>
                 <div className="space-y-2">
