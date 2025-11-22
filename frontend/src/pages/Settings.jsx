@@ -57,6 +57,11 @@ const Settings = ({ user, onLogout }) => {
     }
   };
 
+  const handleCanvasOAuth = () => {
+    // Placeholder for Canvas OAuth integration
+    toast.info('Canvas OAuth integration coming soon!');
+  };
+
   return (
     <Layout user={user} onLogout={onLogout} currentPage="settings">
       <div data-testid="settings-page" className="space-y-6">
