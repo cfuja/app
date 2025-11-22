@@ -174,6 +174,7 @@ const Auth = ({ setUser }) => {
                     value={signupData.full_name}
                     onChange={(e) => setSignupData({...signupData, full_name: e.target.value})}
                     required
+                    className="text-gray-900"
                   />
                 </div>
                 <div className="space-y-2">
@@ -186,6 +187,7 @@ const Auth = ({ setUser }) => {
                     value={signupData.email}
                     onChange={(e) => setSignupData({...signupData, email: e.target.value})}
                     required
+                    className="text-gray-900"
                   />
                 </div>
                 <div className="space-y-2">
