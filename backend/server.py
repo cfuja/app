@@ -14,24 +14,55 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 import json
 
+
+app = FastAPI()
+
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = [
+    "https://endearing-tulumba-a4d24e.netlify.app",  # your frontend
+    "http://localhost:3000",  # local testing
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,       # only allow these origins
+    allow_credentials=True,
+    allow_methods=["*"],         # GET, POST, etc.
+    allow_headers=["*"],         # allow headers
+)
+
+api_router = APIRouter()  # <-- this is your router
+
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
-
-# Security
-SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'your-secret-key-change-in-production')
+SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
+ACCESS_TOKEN_EXPIRE_MINUTES = 60  # or whatever duration you want
 
+# MongoDB connection
+# ----- MongoDB connection (REPLACE existing Mongo lines with this) -----
+from motor.motor_asyncio import AsyncIOMotorClient
+
+# read standard env names that you used in .env / Render
+# MONGODB – FINAL VERSION (NO LOCALHOST, NO FALLBACKS)
+import os
+from motor.motor_asyncio import AsyncIOMotorClient
+
+MONGO_URI = os.getenv("MONGODB_URI")
+if not MONGO_URI:
+    raise RuntimeError("MONGODB_URI is not set in Render environment variables!")
+
+client = AsyncIOMotorClient(MONGO_URI)
+db = client.Younivity
+print("Successfully connected to MongoDB Atlas:", MONGO_URI.split("@")[1].split("/")[0])
+# ----------------------------------------------------------------------
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 # Create the main app without a prefix
-app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -688,14 +719,6 @@ async def websocket_endpoint(websocket: WebSocket, group_id: str):
 # Include the router in the main app
 app.include_router(api_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -706,3 +729,7 @@ logger = logging.getLogger(__name__)
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
